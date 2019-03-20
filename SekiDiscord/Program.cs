@@ -152,6 +152,7 @@ namespace SekiDiscord
                 {
                     if (e.Message.Content.EndsWith('?'))
                     {
+                        await BotTalk.BotAnswer(e, StringLib, botName);
                     }
                     else
                     {
