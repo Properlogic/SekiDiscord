@@ -87,8 +87,11 @@ namespace SekiDiscord.Commands
             //TODO: This needs to go or be simplified
             string input = e.Message.Content;
             string user = ((DiscordMember)e.Message.Author).DisplayName;
-            string arg;
+            string message = null;
+            Random r = new Random();
+            List<DiscordMember> listU = Useful.getOnlineUsers(e.Channel.Guild);
 
+            string arg;
             try
             {
                 arg = input.Split(new char[] { ' ' }, 2)[1];
@@ -98,24 +101,23 @@ namespace SekiDiscord.Commands
                 arg = string.Empty;
             }
 
+            //Let chat know that the bot is thinking...
             await e.Channel.TriggerTypingAsync();
-
-            if (questions == null)
-                questions = new Questions();
-
-            string subjectNPL = questions.GetSubject(arg);
-
-            string message = null;
-            Random r = new Random();
-
-            List<DiscordMember> listU = Useful.getOnlineUsers(e.Channel.Guild);
 
             //Easter egg
             if (arg.ToLower().Trim().Contains("play despacito"))
             {
                 message = "https://www.youtube.com/watch?v=kJQP7kiw5Fk";
+                await e.Message.RespondAsync(message);
+                return;
             }
-            else
+
+            //Get the subject of the phrase using NLP
+            if (questions == null)
+                questions = new Questions();
+
+            string subjectNLP = questions.GetSubject(arg);
+
             // End with ?
             if (arg[arg.Length - 1] == '?')
             {
@@ -158,7 +160,7 @@ namespace SekiDiscord.Commands
                             {
                                 if (split.Length >= 4)
                                 {
-                                    string replaced = QuestionsRegex(subjectNPL);
+                                    string replaced = QuestionsRegex(subjectNLP);
 
                                     if (string.Compare(split[2], "is", true) == 0)
                                     {
@@ -166,7 +168,7 @@ namespace SekiDiscord.Commands
                                     }
                                     else if (string.Compare(split[2], "are", true) == 0)
                                     {
-                                        if (string.Compare(subjectNPL, "you", true) == 0)
+                                        if (string.Compare(subjectNLP, "you", true) == 0)
                                             message = "I was compiled on " + GetCompilationDate.RetrieveLinkerTimestamp().ToString("R");
                                         else
                                             message = replaced + " are " + r.Next(41) + " years old";
@@ -181,7 +183,7 @@ namespace SekiDiscord.Commands
                     }
                     else if (string.Compare(split[0], "how's", true) == 0)
                     {
-                        string replaced = QuestionsRegex(subjectNPL);
+                        string replaced = QuestionsRegex(subjectNLP);
                         message = replaced + " is " + howIs[r.Next(howIs.Length)];
                     }
                     else if (string.Compare(split[0], "why", true) == 0)
@@ -198,14 +200,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -224,14 +226,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -261,14 +263,14 @@ namespace SekiDiscord.Commands
                                 if (r.Next(0, 2) == 1)
                                     yes = true;
 
-                                string subject = subjectNPL;
+                                string subject = subjectNLP;
                                 string rest = "";
 
                                 for (int i = 1; i < split.Length; i++)
                                 {
                                     rest += split[i] + " ";
                                 }
-                                rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                                rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                                 string replaced = QuestionsRegex(rest);
 
@@ -354,7 +356,7 @@ namespace SekiDiscord.Commands
                         {
                             rest += split[i] + " ";
                         }
-                        rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                        rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                         string replaced = QuestionsRegex(rest);
 
@@ -371,14 +373,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -413,14 +415,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -462,14 +464,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -504,14 +506,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -532,14 +534,14 @@ namespace SekiDiscord.Commands
 
                         if (split.Length >= 2)
                         {
-                            string subject = subjectNPL;
+                            string subject = subjectNLP;
                             string rest = "";
 
                             for (int i = 1; i < split.Length; i++)
                             {
                                 rest += split[i] + " ";
                             }
-                            rest = rest.TrimEnd(' ').Replace(subjectNPL, string.Empty);
+                            rest = rest.TrimEnd(' ').Replace(subjectNLP, string.Empty);
 
                             string replaced = QuestionsRegex(rest);
 
@@ -611,7 +613,7 @@ namespace SekiDiscord.Commands
             public Questions()
             {
                 // Loading english PCFG parser from file
-                lp = LexicalizedParser.loadModel(@"models\englishPCFG.ser.gz");
+                lp = LexicalizedParser.loadModel("models\\englishPCFG.ser.gz");
             }
 
             public string GetSubject(string question)
