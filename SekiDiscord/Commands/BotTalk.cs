@@ -88,6 +88,7 @@ namespace SekiDiscord.Commands
             string input = e.Message.Content;
             string user = ((DiscordMember)e.Message.Author).DisplayName;
             string message = null;
+            string subjectNLP;
             Random r = new Random();
             List<DiscordMember> listU = Useful.getOnlineUsers(e.Channel.Guild);
 
@@ -112,11 +113,19 @@ namespace SekiDiscord.Commands
                 return;
             }
 
-            //Get the subject of the phrase using NLP
-            if (questions == null)
-                questions = new Questions();
+            try
+            {
+                //Get the subject of the phrase using NLP
+                if (questions == null)
+                    questions = new Questions();
 
-            string subjectNLP = questions.GetSubject(arg);
+                subjectNLP = questions.GetSubject(arg);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Error: " + ex.Message);
+                subjectNLP = null;
+            }
 
             // End with ?
             if (arg[arg.Length - 1] == '?')
@@ -156,7 +165,7 @@ namespace SekiDiscord.Commands
                                 KillUser.Kill(e, stringLibrary, Useful.GetBetween(arg, "did", "die"));
                                 return;
                             }
-                            else if (string.Compare(split[1], "old", true) == 0)
+                            else if (string.Compare(split[1], "old", true) == 0 && subjectNLP != null)
                             {
                                 if (split.Length >= 4)
                                 {
@@ -181,7 +190,7 @@ namespace SekiDiscord.Commands
                         else
                             message = user + ", no idea...";
                     }
-                    else if (string.Compare(split[0], "how's", true) == 0)
+                    else if (string.Compare(split[0], "how's", true) == 0 && subjectNLP != null)
                     {
                         string replaced = QuestionsRegex(subjectNLP);
                         message = replaced + " is " + howIs[r.Next(howIs.Length)];
@@ -191,7 +200,7 @@ namespace SekiDiscord.Commands
                         if (split.Length >= 2)
                             message = "Because " + listU[r.Next(listU.Count)].DisplayName + " " + because[r.Next(because.Length)];
                     }
-                    else if (string.Compare(split[0], "is", true) == 0)
+                    else if (string.Compare(split[0], "is", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
 
@@ -217,7 +226,7 @@ namespace SekiDiscord.Commands
                                 message = (whyN[r.Next(whyN.Length)] + " " + subject.Replace("your", "my") + " isn't " + replaced).Trim();
                         }
                     }
-                    else if (string.Compare(split[0], "was", true) == 0)
+                    else if (string.Compare(split[0], "was", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
 
@@ -257,7 +266,7 @@ namespace SekiDiscord.Commands
                         {
                             if (r.Next(100) < 15)
                                 message = why[r.Next(why.Length)];
-                            else
+                            else if (subjectNLP != null)
                             {
                                 bool yes = false;
                                 if (r.Next(0, 2) == 1)
@@ -277,18 +286,18 @@ namespace SekiDiscord.Commands
                                 if (subject.Trim() == "you")
                                 {
                                     if (yes)
-                                        message = ((whyY[r.Next(whyY.Length)]) + " " + "I'm " + replaced).Trim();
+                                        message = (whyY[r.Next(whyY.Length)] + " " + "I'm " + replaced).Trim();
                                     else
-                                        message = ((whyN[r.Next(whyN.Length)]) + " " + "I'm not " + replaced).Trim();
+                                        message = (whyN[r.Next(whyN.Length)] + " " + "I'm not " + replaced).Trim();
                                 }
                                 else
                                 {
                                     subject = QuestionsRegex(subject);
 
                                     if (yes)
-                                        message = ((whyY[r.Next(whyY.Length)]) + " " + subject + " are " + replaced).Trim();
+                                        message = (whyY[r.Next(whyY.Length)] + " " + subject + " are " + replaced).Trim();
                                     else
-                                        message = ((whyN[r.Next(whyN.Length)]) + " " + subject + " aren't " + replaced).Trim();
+                                        message = (whyN[r.Next(whyN.Length)] + " " + subject + " aren't " + replaced).Trim();
                                 }
                             }
                         }
@@ -343,7 +352,7 @@ namespace SekiDiscord.Commands
                     {
                         await BotThink(e, stringLibrary, botName);
                     }
-                    else if (string.Compare(split[0], "am", true) == 0 && string.Compare(split[1], "i", true) == 0)
+                    else if (string.Compare(split[0], "am", true) == 0 && string.Compare(split[1], "i", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
 
@@ -365,7 +374,7 @@ namespace SekiDiscord.Commands
                         else
                             message = (whyN[r.Next(whyN.Length)] + " you aren't " + replaced).Trim();
                     }
-                    else if (string.Compare(split[0], "do", true) == 0)
+                    else if (string.Compare(split[0], "do", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
                         if (r.Next(0, 2) == 1)
@@ -407,7 +416,7 @@ namespace SekiDiscord.Commands
                             }
                         }
                     }
-                    else if (string.Compare(split[0], "should", true) == 0)
+                    else if (string.Compare(split[0], "should", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
                         if (r.Next(0, 2) == 1)
@@ -456,7 +465,7 @@ namespace SekiDiscord.Commands
                                 message = (whyN[r.Next(whyN.Length)]).Trim();
                         }
                     }
-                    else if (string.Compare(split[0], "did", true) == 0)
+                    else if (string.Compare(split[0], "did", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
                         if (r.Next(0, 2) == 1)
@@ -498,7 +507,7 @@ namespace SekiDiscord.Commands
                             }
                         }
                     }
-                    else if (string.Compare(split[0], "does", true) == 0)
+                    else if (string.Compare(split[0], "does", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
                         if (r.Next(0, 2) == 1)
@@ -525,7 +534,7 @@ namespace SekiDiscord.Commands
                                 message = (whyN[r.Next(whyN.Length)] + " " + subject + " does not " + replaced).Trim();
                         }
                     }
-                    else if (string.Compare(split[0], "will", true) == 0)
+                    else if (string.Compare(split[0], "will", true) == 0 && subjectNLP != null)
                     {
                         bool yes = false;
 
@@ -639,7 +648,7 @@ namespace SekiDiscord.Commands
                 try
                 {
                     StringBuilder sb = new StringBuilder();
-                    String line = br.readLine();
+                    string line = br.readLine();
 
                     while (line != null)
                     {

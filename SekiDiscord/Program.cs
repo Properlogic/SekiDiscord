@@ -3,6 +3,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using SekiDiscord.Commands;
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SekiDiscord
@@ -36,6 +38,10 @@ namespace SekiDiscord
 
         private static void Main(string[] args)
         {
+            CultureInfo ci = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = ci;
+            Thread.CurrentThread.CurrentUICulture = ci;
+
             if (args.Length < 1)
             {
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Not enough arguments. Usage: SekiDiscord <discord-api-key> <google-api-key>. Quitting.");
